@@ -6,11 +6,11 @@ app = Flask(__name__)
 
 @app.route('/')
 def home():
-    return "Hello, World!"
+    return "Hello, Welcome to my app!"
 
 @app.route('/speech', methods=['POST'])
 def speech():
-    audio_data = request.get_data()
+    audio_data = request.get_json().get('audio_data')
 
     # Set up the Azure Speech-to-Text API client
     speech_config = speechsdk.SpeechConfig(
@@ -39,4 +39,4 @@ def speech():
     return "Speech received: " + text
 
 if __name__ == '__main__':
-    app.run()
+    app.run(host='0.0.0.0', port=8080)
