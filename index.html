@@ -5,9 +5,15 @@
   </head>
   <body>
     <h1>Speech Chatbot</h1>
-    <form method="POST" action="/speech">
-      <input type="button" value="Record">
-      <input type="submit" value="Submit">
-    </form>
-  </body>
-</html>
+    <button id="record-button">Record</button>
+    <script>
+      var recordButton = document.getElementById("record-button");
+      var recognition = new webkitSpeechRecognition();
+      recognition.continuous = true;
+      recognition.interimResults = true;
+      recordButton.onclick = function() {
+        recognition.start();
+      };
+      recognition.onresult = function(event) {
+        var audioData = event.results[event.results.length - 1][
+
