@@ -1,4 +1,6 @@
+import os
 from flask import Flask, request
+import azure.cognitiveservices.speech as speechsdk
 
 app = Flask(__name__)
 
@@ -9,11 +11,32 @@ def home():
 @app.route('/speech', methods=['POST'])
 def speech():
     audio_data = request.get_data()
-    # TODO: process the audio data using the Google Speech-to-Text API
-    # and generate a response using the OpenAI API
-    # then convert the response to speech using the Google Text-to-Speech API
+
+    # Set up the Azure Speech-to-Text API client
+    speech_config = speechsdk.SpeechConfig(
+        subscription="your-subscription-key",
+        endpoint="your-endpoint-url"
+    )
+    audio_config = speechsdk.audio.AudioConfig(
+        channels=1,
+        sample_rate=speechsdk.AudioSamplingRate.SAMPLE_RATE_16K,
+        format=speechsdk.AudioStreamFormat.get_wave_format_pcm(16, 1, 16000)
+    )
+
+    # Create a recognizer object and start transcribing the audio data
+    recognizer = speechsdk.SpeechRecognizer(speech_config=speech_config, audio_config=audio_config)
+    result = recognizer.recognize_once(audio_data)
+
+    # Get the transcribed text
+    text = result.text
+
+    # Print the transcribed text
+    print("Transcribed text:", text)
+
+    # TODO: process the text using the OpenAI API
+    # then convert the response to speech using the Azure Text-to-Speech API
     # and return the speech data as a response
-    return "Speech received!"
+    return "Speech received: " + text
 
 if __name__ == '__main__':
     app.run()
