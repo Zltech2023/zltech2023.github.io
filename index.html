@@ -6,8 +6,10 @@
   <body>
     <h1>Speech Chatbot</h1>
     <button id="record-button">Record</button>
+    <div id="result"></div>
     <script>
       var recordButton = document.getElementById("record-button");
+      var resultDiv = document.getElementById("result");
       var recognition = new webkitSpeechRecognition();
       recognition.continuous = true;
       recognition.interimResults = true;
@@ -15,5 +17,17 @@
         recognition.start();
       };
       recognition.onresult = function(event) {
-        var audioData = event.results[event.results.length - 1][
-
+        var audioData = event.results[event.results.length - 1][0].transcript;
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "/speech");
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.onreadystatechange = function() {
+          if (xhr.readyState === 4 && xhr.status === 200) {
+            resultDiv.innerHTML = xhr.responseText;
+          }
+        };
+        xhr.send(JSON.stringify({ audio_data: audioData }));
+      };
+    </script>
+  </body>
+</html>
