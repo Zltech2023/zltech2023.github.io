@@ -1,49 +1,25 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Speech Chatbot</title>
-  </head>
-  <body>
-    <h1>Speech Chatbot</h1>
-    <button id="record-button">Record</button>
-    <button id="stop-button">Stop</button>
-    <div id="result"></div>
-    <form action="/speech" method="POST">
-      <button type="submit">Submit</button>
-    </form>
+<head>
+    <title>Chatbot</title>
+</head>
+<body>
+    <h1>Chatbot</h1>
+    <button id="start">Start</button>
+    <button id="stop">Stop</button>
     <script>
-      var recordButton = document.getElementById("record-button");
-      var stopButton = document.getElementById("stop-button");
-      var resultDiv = document.getElementById("result");
-      var recognition = new webkitSpeechRecognition();
-      recognition.continuous = true;
-      recognition.interimResults = true;
-      var isRecording = false;
-      recordButton.onclick = function() {
-        recognition.start();
-        isRecording = true;
-      };
-      stopButton.onclick = function() {
-        recognition.stop();
-        isRecording = false;
-      };
-      recognition.onresult = function(event) {
-        var audioData = event.results[event.results.length - 1][0].transcript;
-        var xhr = new XMLHttpRequest();
-        xhr.open("POST", "/speech");
-        xhr.setRequestHeader("Content-Type", "application/json");
-        xhr.onreadystatechange = function() {
-          if (xhr.readyState === 4 && xhr.status === 200) {
-            resultDiv.innerHTML = xhr.responseText;
-          }
-        };
-        xhr.send(JSON.stringify({ audio_data: audioData }));
-      };
-      recognition.onend = function() {
-        if (isRecording) {
-          recognition.start();
-        }
-      };
+        const startBtn = document.querySelector("#start");
+        const stopBtn = document.querySelector("#stop");
+
+        startBtn.addEventListener("click", () => {
+            fetch("/start", { method: "POST" })
+                .then(response => response.text())
+                .then(message => console.log(message));
+        });
+
+        stopBtn.addEventListener("click", () => {
+            // TODO: Implement stop functionality
+        });
     </script>
-  </body>
+</body>
 </html>
