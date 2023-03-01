@@ -60,7 +60,7 @@ def recognize_from_microphone():
 
 # Get respond from OpenAI for the chat
 
-openai.api_key = "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"
+openai.api_key = os.environ['OPENAI_KEY']
 
 def ask_openai(prompt):
     response = openai.Completion.create(
